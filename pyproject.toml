@@ -1,0 +1,38 @@
+[project]
+name = "calib"
+version = "0.1.0"
+description = "WaveCams calibration tool"
+readme = "README.md"
+requires-python = ">=3.11"
+
+dependencies = [
+    'ruff',
+    'typer',
+    'opencv-python',
+    'numpy',
+    'matplotlib',
+    'PyQt5'
+]
+
+[dependency-groups]
+    doc = [
+        'mkdocs',
+        'mkdocs-material',
+        'mkdocstrings[python]',
+        'mkdocs-gen-files',
+        'mkdocs-literate-nav',
+        'mkdocs-section-index'
+    ]
+    dev = [
+        "ipython>=9.3.0"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+sources = ["src"]
+
+[project.scripts]
+roi_editor = "roi_editor.cli.app:app"
