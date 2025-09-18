@@ -1,1 +1,3 @@
-# calib
+# ROI Editor 
+
+## Installation
