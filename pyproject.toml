@@ -3,12 +3,12 @@ name = "calib"
 version = "0.1.0"
 description = "WaveCams calibration tool"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.9"
 
 dependencies = [
     'ruff',
     'typer',
-    'opencv-python',
+    'opencv-python-headless',
     'numpy',
     'matplotlib',
     'PyQt5'
@@ -23,9 +23,6 @@ dependencies = [
         'mkdocs-literate-nav',
         'mkdocs-section-index'
     ]
-    dev = [
-        "ipython>=9.3.0"
-]
 
 [build-system]
 requires = ["hatchling"]
