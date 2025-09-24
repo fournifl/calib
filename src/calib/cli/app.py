@@ -6,12 +6,15 @@ Description
 Use calib to compute camera's intrinsic parameters.
 """
 
+# usage:
 # python src/calib/cli/app.py /home/florent/Projects/Etretat/Etretat_South2/calib_snapshots/ /home/florent/Projects/Etretat/Etretat_South2/info/calibration/ 8 6
+
 from pathlib import Path
 from typing import Annotated
 import sys
-from calib.core.camcalib import intrinsic_parameters
 
+# from calib.core.camcalib import intrinsic_parameters
+import calibrate
 import typer
 
 
@@ -53,7 +56,8 @@ def main(
 
     try:
         # Run calibration
-        intrinsic = intrinsic_parameters(input_directory, chessboard_size)
+        # intrinsic = intrinsic_parameters(input_directory, chessboard_size)
+        calibrate.main(input_directory, output_directory, chessboard_size)
 
     except Exception as e:  # noqa: BLE001
         typer.secho(f"An error occurred: {e}", fg=typer.colors.RED)
