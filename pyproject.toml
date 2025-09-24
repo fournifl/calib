@@ -10,8 +10,7 @@ dependencies = [
     'typer',
     'opencv-python-headless',
     'numpy',
-    'matplotlib',
-    'PyQt5'
+    'matplotlib'
 ]
 
 [dependency-groups]
