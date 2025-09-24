@@ -7,7 +7,7 @@ import matplotlib
 
 matplotlib.use("Qt5Agg")
 import matplotlib.pyplot as plt
-from calib.core.img import read, showcv2, showmpl
+from calib.core.img import read, showcv2, showmpl, crop
 
 
 logger = logging.getLogger(__name__)
@@ -203,7 +203,9 @@ def read_control_points(filename):
     return Xpix, GCPs, utmzone, float(beach_orientation), imshape
 
 
-def check_control_points(imgpoints, imgfiles, chessboard_size):
+def check_control_points(
+    imgpoints, imgfiles, chessboard_size, output_dir, user_input=False
+):
     """Visual control of control points found in calibration images by
     :func:`get_control_points_from_img` function.
 
@@ -229,19 +231,31 @@ def check_control_points(imgpoints, imgfiles, chessboard_size):
     imgfiles : list of str
         list of image filenames (same as input with only valid points)
     """
+    check_control_pts_dir = output_dir / "check_control_points"
+    check_control_pts_dir.mkdir(parents=True, exist_ok=True)
     nx, ny = chessboard_size
     points_keep = []
     img_keep = []
     for img_pts, fname in zip(imgpoints, imgfiles):
         img = read(fname)
         plot = cv2.drawChessboardCorners(img, (ny, nx), img_pts, True)
-        plt.figure(figsize=(25, 20))
+        plot = crop(plot)
+        fig = plt.figure(figsize=(25, 14))
         plt.imshow(plot[:, :, ::-1])
-        plt.show()
-        var = input(" Control points OK in previous image ? ([y]/n):")
-        if var.lower() != "n":
+        plt.axis("off")
+        if user_input:
+            plt.show()
+            var = input(" Control points OK in previous image ? ([y]/n):")
+            if var.lower() != "n":
+                points_keep.append(img_pts)
+                img_keep.append(fname)
+        else:
+            fig.tight_layout()
+            fig.savefig(check_control_pts_dir.joinpath(os.path.basename(fname)))
             points_keep.append(img_pts)
             img_keep.append(fname)
+            plt.close("all")
+
     return points_keep, img_keep
 
 
@@ -377,7 +391,7 @@ def plot_img_points_cv(img, img_points):
     return img_out
 
 
-def intrinsic_parameters(path, chessboard_size, check_img_points=False):
+def intrinsic_parameters(path, chessboard_size, check_img_points=True):
     """
     Given a directory path and a chessboard_size compute camera matrix and
     distortion coefficients
@@ -397,11 +411,7 @@ def intrinsic_parameters(path, chessboard_size, check_img_points=False):
     imgpoints, imgfiles, imshape = get_control_points_from_img(path, chessboard_size)
 
     # compute space covered in the image by calibration points
-    cali_pts_coverage = plot_img_points_cv(read(imgfiles[0]), imgpoints)
-
-    # check control points
-    if check_img_points:
-        imgpoints, imgfiles = check_control_points(imgpoints, imgfiles, chessboard_size)
+    points_coverage = plot_img_points_cv(read(imgfiles[0]), imgpoints)
 
     objpoints = make_object_points(imgpoints, chessboard_size)
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(
@@ -416,12 +426,13 @@ def intrinsic_parameters(path, chessboard_size, check_img_points=False):
     height = imshape[0]
     width = imshape[1]
     intrinsec_dict = {
-        "Camera matrix": mtx,
-        "distorsion_coefficients": dist,
+        "camera_matrix": mtx,
+        "dist_coeffs": dist,
         "width": width,
         "height": height,
+        "error": mean_error,
     }
-    return intrinsec_dict, cali_pts_coverage
+    return intrinsec_dict, points_coverage, imgpoints, imgfiles
 
 
 def draw(img, corners, imgpts):
