@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 import src.calib.core.camcalib as cal
 import numpy as np
 from pathlib import Path
@@ -7,12 +6,11 @@ import src.calib.core.img as cimg
 
 
 def show_intrinsic(input_dir, output_dir, img_real=True):
-    # calib_file, img=None, dest=None):
     calib_file = output_dir / "calibration.json"
 
     tmp = read_json_to_dict(calib_file)
-    dist = tmp["distorsion_coefficients"]
-    mtx = tmp["Camera matrix"]
+    dist = tmp["dist_coeffs"]
+    mtx = tmp["camera_matrix"]
     width = tmp["width"]
     height = tmp["height"]
     imshape = (width, height)
@@ -42,9 +40,12 @@ def show_intrinsic(input_dir, output_dir, img_real=True):
 
 def main(input_directory, output_directory, chessboard_size):
     # compute intrinsic parameters
-    intrinsec_dict, cali_pts_coverage = cal.intrinsic_parameters(
+    intrinsec_dict, cali_pts_coverage, imgpoints, imgfiles = cal.intrinsic_parameters(
         input_directory, chessboard_size
     )
+
+    # check control points
+    cal.check_control_points(imgpoints, imgfiles, chessboard_size, output_directory)
 
     # plot space covered in the image by calibration points
     cimg.save(output_directory.joinpath("calibration_points.png"), cali_pts_coverage)
