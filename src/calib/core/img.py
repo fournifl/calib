@@ -150,3 +150,23 @@ def show_distortion_field(
         plt.show()
     plt.close(fig)
     return fig
+
+
+def crop(img):
+    # Convertir en niveaux de gris
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Créer un masque des pixels non-blancs (ici on considère "blanc" comme proche de 255)
+    mask = gray < 254
+
+    # Trouver les coordonnées non-blanches
+    coords = np.argwhere(mask)
+
+    # Récupérer les limites (ymin, ymax, xmin, xmax)
+    y0, x0 = coords.min(axis=0)
+    y1, x1 = coords.max(axis=0) + 1  # +1 car slicing exclut la borne
+
+    # Recadrer l'image
+    cropped = img[y0:y1, x0:x1]
+
+    return cropped
