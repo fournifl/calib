@@ -7,7 +7,7 @@ import matplotlib
 
 matplotlib.use("Qt5Agg")
 import matplotlib.pyplot as plt
-from calib.core.img import read, showcv2, showmpl, crop
+from calib.core.img import read, showmpl, crop
 
 
 logger = logging.getLogger(__name__)
@@ -138,71 +138,6 @@ def add_grid_and_undistort(mtx, dist, img):
     return distorted, undistorted
 
 
-def get_control_points_from_files(path):
-    img_points = []
-    obj_points = []
-    fnames = []
-    for f in os.listdir(path):
-        fname = os.path.join(path, f)
-        img, obj, __a, __b, imshape = read_control_points(fname)
-        img_points.append(np.expand_dims(img, axis=1))
-        obj_points.append(np.expand_dims(obj, axis=1))
-        if not imshape:
-            raise IOError("you must set imshape in control points files")
-        fnames.append(f)
-    return img_points, obj_points, fnames, imshape
-
-
-def read_control_points(filename):
-    """
-    Read the file containing the control points, each line corresponding to
-    a point, with optional header informations:
-    # beach orientation = 150
-    # utmzone = 28N
-    # imshape = width x height
-    lat lon altitude xpix ypix
-    (xpix, ypix)=(0,0) is  left corner
-
-    Parameters
-    ----------
-    filename : string
-
-    Returns
-    -------
-    Xpix: ndarray
-        shape (npts, 2), each line containing [x, y] pixel coordinates
-    GCPs: ndarray
-        shape (npts, 3), each line containing [x_geo, y_geo, z_geo] coordinates
-    utmzone: str
-        defining the utm zone name
-    beach_orientation: float
-        beach orientation in degrees
-    imshape : tuple(ints)
-        width, height of image
-    """
-    utmzone = ""
-    beach_orientation = 0
-    imshape = ()
-    with open(filename, "r") as f:
-        for line in f:
-            if line.startswith("#"):
-                if "utm" in line:
-                    utmzone = line.split("=")[1].strip()
-                elif "beach" in line:
-                    beach_orientation = line.strip().split("=")[1]
-                elif "shape" in line:
-                    imshape = line.strip().split("=")[1].split("x")
-                    imshape = tuple([int(x.strip()) for x in imshape])
-
-    data = np.genfromtxt(filename, dtype=np.float32)
-    npts = data.shape[0]
-    Xpix = np.array(data[:, 3:])
-    GCPs = np.array(data[:, :3])
-    # GCPs[:,[0,1]] = GCPs[:,[1,0]]
-    logger.info("Number of Control Points {0}".format(data.shape[0]))
-    return Xpix, GCPs, utmzone, float(beach_orientation), imshape
-
-
 def check_control_points(
     imgpoints, imgfiles, chessboard_size, output_dir, user_input=False
 ):
@@ -297,75 +232,6 @@ def projection_error(objpoints, imgpoints, rvecs, tvecs, mtx, dist):
     return mean_error / n_images
 
 
-def undistort(fname, camera_mtx, dist_coeffs, out_path=None):
-    """Correct input image `fname` from its optical distortions and save
-    result image with the same name and `_undistorted` suffix.
-
-    Parameters
-    ----------
-    fname
-    camera_mtx
-    dist_coeffs
-    out_path
-
-    Returns
-    -------
-
-    """
-    img = read(fname)
-    # undistort
-    dst = cv2.undistort(img, camera_mtx, dist_coeffs, None, camera_mtx)
-    if out_path:
-        name, ext = os.path.splitext(os.path.join(out_path, os.path.basename(fname)))
-    else:
-        name, ext = os.path.splitext(fname)
-
-    out_fname = name + "_undistorted.jpg"
-    cv2.imwrite(out_fname, dst)
-    return dst
-
-
-def _draw(img, imgpts):
-    """Draw a unit cube on img."""
-    imgpts = np.int32(imgpts).reshape(-1, 2)
-    # draw ground floor in green
-    img = cv2.drawContours(img, [imgpts[:4]], -1, (0, 255, 0), -3)
-    # draw pillars in blue color
-    for i, j in zip(range(4), range(4, 8)):
-        img = cv2.line(img, tuple(imgpts[i]), tuple(imgpts[j]), 255, 3)
-    # draw top layer in red color
-    img = cv2.drawContours(img, [imgpts[4:]], -1, (0, 0, 255), 3)
-    return img
-
-
-def plot_axis(imgpoints, objpoints, imgfiles, mtx, dist):
-    """Plot axis in images"""
-    axis = np.float32(
-        [
-            [0, 0, 0],
-            [0, 3, 0],
-            [3, 3, 0],
-            [3, 0, 0],
-            [0, 0, -3],
-            [0, 3, -3],
-            [3, 3, -3],
-            [3, 0, -3],
-        ]
-    )
-
-    for imgpt, objpt, fname in zip(imgpoints, objpoints, imgfiles):
-        img = read(fname)
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-        ret, rvecs, tvecs, inliers = cv2.solvePnPRansac(objpt, imgpt, mtx, dist)
-
-        # project 3D points to image plane
-        imgpts, jac = cv2.projectPoints(axis, rvecs, tvecs, mtx, dist)
-
-        img = _draw(img, imgpts)
-        showcv2(img)
-
-
 def plot_img_points_cv(img, img_points):
     img_out = img.copy()
     radius = int(img.shape[0] / 200)
@@ -433,33 +299,6 @@ def intrinsic_parameters(path, chessboard_size, check_img_points=True):
         "error": mean_error,
     }
     return intrinsec_dict, points_coverage, imgpoints, imgfiles
-
-
-def draw(img, corners, imgpts):
-    corner = tuple(corners[0].ravel())
-    img = cv2.line(img, corner, tuple(imgpts[0].ravel()), (255, 0, 0), 5)
-    img = cv2.line(img, corner, tuple(imgpts[1].ravel()), (0, 255, 0), 5)
-    img = cv2.line(img, corner, tuple(imgpts[2].ravel()), (0, 0, 255), 5)
-    return img
-
-
-def coord_sys_on_calibs(mtx, dist, rvecs, tvecs, imgpoints, files=None, imshape=None):
-    ploted = []
-    axis_scale = 3
-    axis = np.float32([[1, 0, 0], [0, 1, 0], [0, 0, -1]]).reshape(-1, 3)
-    axis *= axis_scale
-
-    for i, pts in enumerate(imgpoints):
-        try:
-            img_f = files[i]
-            img = read(img_f)
-        except (IndexError, OSError):
-            img = np.ones(imshape[::-1] + (3,), dtype=np.uint8) + 50
-        img = plot_img_points_cv(img, pts)
-        axis_proj, jac = cv2.projectPoints(axis, rvecs[i], tvecs[i], mtx, dist)
-        dst = draw(img, pts, axis_proj)
-        ploted.append(dst)
-    return ploted
 
 
 def plot_calibration_parameters_contribution(camera_matrix, dist_coeffs, img):

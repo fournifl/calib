@@ -21,20 +21,6 @@ def read(fname, gray=None):
         return img
 
 
-def showcv2(img):
-    """
-    Displays image using openCV's HighGUI
-
-    Parameters
-    ----------
-    img : Image to display
-    """
-    cv2.namedWindow("Image", flags=0)
-    cv2.imshow("Image", img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
 def showmpl(img, ax=None, title=None, **kwargs):
     """
     Display image using Matplotlib's imshow.
