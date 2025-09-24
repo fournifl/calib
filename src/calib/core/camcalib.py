@@ -409,11 +409,11 @@ def intrinsic_parameters(path, chessboard_size, check_img_points=True):
     """
     # get control points
     imgpoints, imgfiles, imshape = get_control_points_from_img(path, chessboard_size)
+    objpoints = make_object_points(imgpoints, chessboard_size)
 
     # compute space covered in the image by calibration points
     points_coverage = plot_img_points_cv(read(imgfiles[0]), imgpoints)
 
-    objpoints = make_object_points(imgpoints, chessboard_size)
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(
         objpoints, imgpoints, imshape, None, None
     )
