@@ -13,7 +13,6 @@ from pathlib import Path
 from typing import Annotated
 import sys
 
-# from calib.core.camcalib import intrinsic_parameters
 import calibrate
 import typer
 

@@ -3,9 +3,6 @@ import logging
 import cv2
 import numpy as np
 import os
-import matplotlib
-
-matplotlib.use("Qt5Agg")
 import matplotlib.pyplot as plt
 from calib.core.img import read, showmpl, crop
 

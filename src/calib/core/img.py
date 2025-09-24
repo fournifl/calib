@@ -1,10 +1,7 @@
 import cv2
 import numpy as np
-import matplotlib
 from src.calib.core.inout import mkdir_p
 import src.calib.core.signal as sig
-
-matplotlib.use("Qt5Agg")
 import matplotlib.pyplot as plt
 
 
