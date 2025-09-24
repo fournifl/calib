@@ -7,7 +7,7 @@ Use calib to compute camera's intrinsic parameters.
 """
 
 # usage:
-# python src/calib/cli/app.py /home/florent/Projects/Etretat/Etretat_South2/calib_snapshots/ /home/florent/Projects/Etretat/Etretat_South2/info/calibration/ 8 6
+# python input_dir_snapshots output_dir_calibration 6 4
 
 from pathlib import Path
 from typing import Annotated
