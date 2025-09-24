@@ -75,7 +75,6 @@ def get_control_points_from_img(path, chessboard_size):
     imshape = None
 
     for fname in os.listdir(path):
-        print(fname)
         logger.info("Searching calibration pattern in image %s" % fname)
         fname = os.path.join(path, fname)
         try:
@@ -83,16 +82,11 @@ def get_control_points_from_img(path, chessboard_size):
         except OSError:
             logger.info("%s is not an image file or is unreachable" % fname)
             continue
-
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        plt.imshow(gray)
-        plt.show()
         imshape = gray.shape[::-1]
 
         # Find the chess board corners
         ret, corners = cv2.findChessboardCorners(gray, (ny, nx), None)
-        print(ret)
-        print(corners)
 
         # If found, add object points, image points (after refining them)
         if ret is True:
@@ -378,11 +372,17 @@ def plot_img_points_cv(img, img_points):
         if len(points.shape) > 2:
             points = np.squeeze(points)
         for pt in points:
-            cv2.circle(img_out, (pt[0], pt[1]), radius, colors[i], thickness=-1)
+            cv2.circle(
+                img_out,
+                center=(int(np.round(pt[0])), int(np.round(pt[1]))),
+                radius=radius,
+                color=colors[i],
+                thickness=2,
+            )
     return img_out
 
 
-def intrinsic_parameters(path, chessboard_size, check_img_points=True):
+def intrinsic_parameters(path, chessboard_size, check_img_points=False):
     """
     Given a directory path and a chessboard_size compute camera matrix and
     distortion coefficients
@@ -398,9 +398,13 @@ def intrinsic_parameters(path, chessboard_size, check_img_points=True):
     -------
     None
     """
+    # get control points
     imgpoints, imgfiles, imshape = get_control_points_from_img(path, chessboard_size)
-    fig = plot_img_points_cv(read(imgfiles[0]), imgpoints, display=True)
 
+    # compute space covered in the image by calibration points
+    cali_pts_coverage = plot_img_points_cv(read(imgfiles[0]), imgpoints)
+
+    # check control points
     if check_img_points:
         imgpoints, imgfiles = check_control_points(imgpoints, imgfiles, chessboard_size)
 
@@ -422,7 +426,7 @@ def intrinsic_parameters(path, chessboard_size, check_img_points=True):
         "width": width,
         "height": height,
     }
-    return intrinsec_dict
+    return intrinsec_dict, cali_pts_coverage
 
 
 def draw(img, corners, imgpts):
