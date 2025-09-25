@@ -1,22 +1,20 @@
 import logging
+import os
 
 import cv2
+import matplotlib as mpl
 import numpy as np
-import os
-import matplotlib
 
-matplotlib.use("Agg")
+mpl.use("Agg")
 import matplotlib.pyplot as plt
-from calib.core.img import read, showmpl, crop
 
+from calib.core.img import crop, read, showmpl
 
 logger = logging.getLogger(__name__)
 
 
 def get_control_points_from_img(path, chessboard_size):
-    """Analyse images in path and retrieve pixel coordinates of chessboard
-    corners.
-
+    """Analyse images in path and retrieve pixel coordinates of chessboard corners.  # noqa: D205
     All files in path are analysed (so the directory should contain only
     calibration images). All the calibration images MUST have the same
     dimensions (pixel number).
@@ -25,31 +23,25 @@ def get_control_points_from_img(path, chessboard_size):
     the chessboard size (number of square corners in each dimension),
     and the chessboard in the image should not be larger than the specified
     size. For the following chessboard, dimensions would be (8, 2)::
-
     |X X X X X|
     | X X X X |
     |X X X X X|
-
     For each image analyzed, if a chessboard pattern is found, a numpy array is
     appended to the returned list `imgpoints`, containing the pixel
     coordinates of the found corners, and the corresponding image filename
     is appended to the returned list `imgfiles`.
-
     For a good calibration process, take care to have a good coverage of
     the image (this means taking pictures with the calibration chessboard in
     the corners and borders of the image).
-
 
     Parameters
     ----------
     path : str
         path to directory containing calibration images
-
     chessboard_size : tuple
         number of chessboard corners in the two directions (nx, ny)
 
-
-    Returns
+    Returns:
     -------
     imgpoints : list
         a list of numpy arrays. Each element of the list contains the pixel
@@ -60,7 +52,6 @@ def get_control_points_from_img(path, chessboard_size):
     imshape : tuple
         the shape of calibration images. as (width, height)
     """
-
     nx, ny = chessboard_size
     # termination criteria
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
@@ -141,7 +132,7 @@ def add_grid_and_undistort(mtx, dist, img):
 def check_control_points(
     imgpoints, imgfiles, chessboard_size, output_dir, user_input=False
 ):
-    """Visual control of control points found in calibration images by
+    """Visual control of control points found in calibration images by  # noqa: D205
     :func:`get_control_points_from_img` function.
 
     Each calibration image is displayed with the found control points, and the
@@ -159,7 +150,7 @@ def check_control_points(
     chessboard_size : tuple of int
         (nx, ny) points in calibration chessboard pattern
 
-    Returns
+    Returns:
     -------
     imgpoints : list of np.array
         list of control points (same as input with only valid points)
@@ -195,8 +186,7 @@ def check_control_points(
 
 
 def make_object_points(imgpoints, chessboard_size):
-    """
-    Create list of object points coordinates from list of img points.
+    """Create list of object points coordinates from list of img points.
 
     Parameters
     ----------
@@ -205,7 +195,7 @@ def make_object_points(imgpoints, chessboard_size):
     chessboard_size : tuple of int
         (nx, ny) points in calibration chessboard pattern
 
-    Returns
+    Returns:
     -------
     objpoints : list of np.array
         list of objects points coordinates
@@ -258,8 +248,7 @@ def plot_img_points_cv(img, img_points):
 
 
 def intrinsic_parameters(path, chessboard_size, check_img_points=True):
-    """
-    Given a directory path and a chessboard_size compute camera matrix and
+    """Given a directory path and a chessboard_size compute camera matrix and
     distortion coefficients
 
     Parameters
@@ -269,7 +258,7 @@ def intrinsic_parameters(path, chessboard_size, check_img_points=True):
     chessboard_size : tuple of int
         (nx, ny) points in calibration chessboard pattern
 
-    Returns
+    Returns:
     -------
     None
     """
@@ -302,21 +291,18 @@ def intrinsic_parameters(path, chessboard_size, check_img_points=True):
 
 
 def plot_calibration_parameters_contribution(camera_matrix, dist_coeffs, img):
-    """
-
-    Parameters
+    """Parameters
     ----------
     dist_coeffs: [k1,k2,p1,p2,k3] radial and tangential distortion coefficients
     img: np.ndarray
         image as a numpy array
 
-    Returns
+    Returns:
     -------
     A figure representing distortion field represented on a grid over the
     reference image with the contribution of each parameter independentely
 
     """
-
     (ny, nx, _) = img.shape
     # dist_coeffs comes as a list of list?
     [dist_coeffs] = dist_coeffs

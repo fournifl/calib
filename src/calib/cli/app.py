@@ -1,19 +1,10 @@
-"""
-Description
------------
-Use calib to compute camera's intrinsic parameters.
-"""
-
-# usage:
-# python input_dir_snapshots output_dir_calibration 6 4
-
+import sys
 from pathlib import Path
 from typing import Annotated
-import sys
 
-from calib.cli import calibrate
 import typer
 
+from calib.cli import calibrate
 
 app = typer.Typer(no_args_is_help=True)
 
@@ -61,5 +52,4 @@ def main(
 
 
 if __name__ == "__main__":
-    # typer.run(main)
     app()

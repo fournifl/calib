@@ -1,8 +1,9 @@
 import cv2
-import numpy as np
-from calib.core.inout import mkdir_p
-import calib.core.signal as sig
 import matplotlib
+import numpy as np
+
+import calib.core.signal as sig
+from calib.core.inout import mkdir_p
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -11,10 +12,11 @@ import matplotlib.pyplot as plt
 def read(fname, gray=None):
     img = cv2.imread(fname)
     if img is None:
-        raise OSError(
-            "Can't read image file at %s. File might not exist, "
-            "or check acces rights" % fname
+        msg = (
+            f"Can't read image file at {fname}. File might not exist, "
+            "or check acces rights"
         )
+        raise OSError(msg)
     if gray is not None:
         return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     else:
@@ -22,8 +24,7 @@ def read(fname, gray=None):
 
 
 def showmpl(img, ax=None, title=None, **kwargs):
-    """
-    Display image using Matplotlib's imshow.
+    """Display image using Matplotlib's imshow.
 
     Deal with RGB(matplotlib)/BGR(openCV) problem for color images.
 
@@ -35,10 +36,11 @@ def showmpl(img, ax=None, title=None, **kwargs):
         fig = plt.figure(title)
         ax = fig.add_subplot(111)
     shape = img.shape
-    if len(shape) == 3:
-        ploted = ax.imshow(img[:, :, ::-1], **kwargs)
-    else:
-        ploted = ax.imshow(img, **kwargs)
+    ploted = (
+        ax.imshow(img[:, :, ::-1], **kwargs)
+        if len(shape) == 3
+        else ax.imshow(img, **kwargs)
+    )
     return ploted
 
 
@@ -76,8 +78,7 @@ def save(fname, img):
 def show_distortion_field(
     camera_matrix, dist_coeffs, img=None, imshape=None, display=False
 ):
-    """
-    From the original image and the intrinsic parameters, return and plot the
+    """From the original image and the intrinsic parameters, return and plot the
     undistorted image
 
     Parameters
@@ -91,7 +92,7 @@ def show_distortion_field(
     imshape : tuple
         (nx, ny) or (width, height) in pixels
 
-    Returns
+    Returns:
     -------
         fig: matplotlib figure instance to be displayed / saved
     """
