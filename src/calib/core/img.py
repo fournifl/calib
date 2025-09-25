@@ -4,7 +4,7 @@ from calib.core.inout import mkdir_p
 import calib.core.signal as sig
 import matplotlib
 
-matplotlib.use("TKAgg", warn=False, force=True)
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 

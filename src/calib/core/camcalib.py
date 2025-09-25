@@ -5,7 +5,7 @@ import numpy as np
 import os
 import matplotlib
 
-matplotlib.use("TKAgg", warn=False, force=True)
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from calib.core.img import read, showmpl, crop
 
