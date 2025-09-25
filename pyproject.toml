@@ -31,4 +31,4 @@ build-backend = "hatchling.build"
 sources = ["src"]
 
 [project.scripts]
-roi_editor = "roi_editor.cli.app:app"
+calib = "calib.cli.app:app"
