@@ -1,22 +1,14 @@
-site_name: Waves'N See calib tool
+site_name: Waves'N See calib tool documentation
 site_description: A python tool to compute intrinsic camera parameters
 docs_dir: src
 
 nav:
   - 🏠 Home: index.md
-  - 🖥 CLI: cli.md
-  - 🎥 Acquisition: mode-acquisition.md
-  - 🛠 Hardware:
-      - 🖥 NUC 11: installation-nuc11.md
-      - 🍓 Raspberry PI: installation-raspberry-pi.md
-      - 🎥 Axis: config_axis.md
-      - 📖 Historique: installations-historique.md
-  - ❓FAQ: faq.md
 
 theme:
   name: material
-  logo: img/box_unicode.png
-  favicon: img/box_unicode.ico
+  logo: img/calibration_chessboard.png
+  favicon: img/calibration_chessboard.png
 
   features:
     - navigation.indexes
