@@ -2,7 +2,7 @@ import numpy as np
 
 
 def normalize(array, low=0.0, high=255.0):
-    """Normalize an array between `min` and `max
+    """Normalize an array between `min` and `max!
 
     Input array
     Parameters
@@ -14,17 +14,14 @@ def normalize(array, low=0.0, high=255.0):
     high : float, int
         maximum value of returned array
 
-    Returns
+    Returns:
     -------
-    normalized : np.ndarray
+    normalized : np.ma.ndarray
         the data from `array`, normalized between `min` and `max`
     """
     old_min = np.nanmin(array)
     old_max = np.nanmax(array)
-    if old_min == old_max:
-        factor = 1
-    else:
-        factor = high / (old_max - old_min)
+    factor = 1 if old_min == old_max else high / (old_max - old_min)
     if np.ma.isMaskedArray(array):
         normalized = np.ma.zeros(array.shape)
         normalized.mask = array.mask
