@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Annotated
 import sys
 
-import calibrate
+from calib.cli import calibrate
 import typer
 
 
