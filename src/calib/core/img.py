@@ -2,6 +2,9 @@ import cv2
 import numpy as np
 from calib.core.inout import mkdir_p
 import calib.core.signal as sig
+import matplotlib
+
+matplotlib.use("TKAgg", warn=False, force=True)
 import matplotlib.pyplot as plt
 
 

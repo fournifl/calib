@@ -3,6 +3,9 @@ import logging
 import cv2
 import numpy as np
 import os
+import matplotlib
+
+matplotlib.use("TKAgg", warn=False, force=True)
 import matplotlib.pyplot as plt
 from calib.core.img import read, showmpl, crop
 
