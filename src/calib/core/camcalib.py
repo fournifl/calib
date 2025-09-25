@@ -2,11 +2,8 @@ import logging
 import os
 
 import cv2
-import matplotlib as mpl
-import numpy as np
-
-mpl.use("Agg")
 import matplotlib.pyplot as plt
+import numpy as np
 
 from calib.core.img import crop, read, showmpl
 

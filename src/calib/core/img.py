@@ -1,12 +1,9 @@
 import cv2
-import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 
 import calib.core.signal as sig
 from calib.core.inout import mkdir_p
-
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 
 
 def read(fname, gray=None):
