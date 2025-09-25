@@ -208,15 +208,15 @@ def make_object_points(imgpoints, chessboard_size):
 
 def projection_error(objpoints, imgpoints, rvecs, tvecs, mtx, dist):
     """Compute projection error."""
-    mean_error = 0
+    errors = []
     n_images = len(objpoints)
 
     for i in range(n_images):
         imgpoints2, _ = cv2.projectPoints(objpoints[i], rvecs[i], tvecs[i], mtx, dist)
         error = cv2.norm(imgpoints[i], imgpoints2, cv2.NORM_L2)
         error /= len(imgpoints2)
-        mean_error += error
-    return mean_error / n_images
+        errors.append(error)
+    return np.array(errors)
 
 
 def plot_img_points_cv(img, img_points):
@@ -244,7 +244,7 @@ def plot_img_points_cv(img, img_points):
     return img_out
 
 
-def intrinsic_parameters(path, chessboard_size, check_img_points=True):
+def intrinsic_parameters(path, chessboard_size):
     """Given a directory path and a chessboard_size compute camera matrix and
     distortion coefficients
 
@@ -269,10 +269,13 @@ def intrinsic_parameters(path, chessboard_size, check_img_points=True):
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(
         objpoints, imgpoints, imshape, None, None
     )
-    mean_error = projection_error(objpoints, imgpoints, rvecs, tvecs, mtx, dist)
+
+    # projection error
+    errors = projection_error(objpoints, imgpoints, rvecs, tvecs, mtx, dist)
+
     logger.info("Camera matrix : \n{mtx}".format(mtx=mtx))
     logger.info("Optical distorsion coefficients: \n{dist}".format(dist=dist))
-    logger.info("Average projection error: {err}".format(err=mean_error))
+    logger.info("Average projection error: {err}".format(err=errors.mean()))
 
     imshape = read(imgfiles[0]).shape
     height = imshape[0]
@@ -282,7 +285,7 @@ def intrinsic_parameters(path, chessboard_size, check_img_points=True):
         "dist_coeffs": dist,
         "width": width,
         "height": height,
-        "error": mean_error,
+        "error": errors.mean(),
     }
     return intrinsec_dict, points_coverage, imgpoints, imgfiles
 
