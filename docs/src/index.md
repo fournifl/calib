@@ -18,6 +18,7 @@ Prior to perform camera calibration, make snapshots of the chessboard in differe
 
 In this case, chessboard size is (6,4).
 
+To run camera calibration:
 ```
 cd src/calib
 python cli/app.py input_dir_snapshots output_dir_calibration  chessboard size_x chessboard size_y
