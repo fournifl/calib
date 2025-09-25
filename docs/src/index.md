@@ -2,6 +2,9 @@
 ![python versions](https://img.shields.io/badge/python-3.9&nbsp;3.12-blue)
 ![WNS Team](https://img.shields.io/badge/made&nbsp;by-WNS&nbsp;Team-blue)
 
+Calib stands for the camera calibration procedure.
+Distorsion coefficients, focal lengths, and center of optic are computed.
+
 ## Installation
 ```
 uv venv --python 3.12
