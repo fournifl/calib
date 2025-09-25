@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-"""Download Camera blob image in a specific directory
-
+"""
 Description
 -----------
 Use calib to compute camera's intrinsic parameters.
@@ -55,7 +53,6 @@ def main(
 
     try:
         # Run calibration
-        # intrinsic = intrinsic_parameters(input_directory, chessboard_size)
         calibrate.main(input_directory, output_directory, chessboard_size)
 
     except Exception as e:  # noqa: BLE001
