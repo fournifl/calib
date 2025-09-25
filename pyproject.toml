@@ -11,7 +11,7 @@ dependencies = [
     'opencv-python-headless',
     'numpy',
     "matplotlib",
-    "pyside6>=6.9.2",
+    "pyqt5>=5.15.11",
 ]
 
 [dependency-groups]
