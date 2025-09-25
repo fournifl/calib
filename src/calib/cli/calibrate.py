@@ -1,8 +1,8 @@
-import src.calib.core.camcalib as cal
+import calib.core.camcalib as cal
 import numpy as np
 from pathlib import Path
-from src.calib.core.inout import read_json_to_dict, write_dict_to_json, mkdir_p
-import src.calib.core.img as cimg
+from calib.core.inout import read_json_to_dict, write_dict_to_json, mkdir_p
+import calib.core.img as cimg
 
 
 def show_intrinsic(input_dir, output_dir, img_real=True):

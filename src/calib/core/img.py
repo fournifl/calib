@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
-from src.calib.core.inout import mkdir_p
-import src.calib.core.signal as sig
+from calib.core.inout import mkdir_p
+import calib.core.signal as sig
 import matplotlib.pyplot as plt
 
 
