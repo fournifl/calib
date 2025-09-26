@@ -164,31 +164,25 @@ def check_control_points(
     nx, ny = chessboard_size
     points_keep = []
     img_keep = []
+    # for img_pts, fname in zip(imgpoints, imgfiles):
     for i in track(
         range(len(imgfiles)),
         description="Check control points",
     ):
         fname = imgfiles[i]
         img_pts = imgpoints[i]
-        # for img_pts, fname in zip(imgpoints, imgfiles):
+        print(fname)
         img = read(fname)
         plot = cv2.drawChessboardCorners(img, (ny, nx), img_pts, True)
         plot = crop(plot)
         fig = plt.figure(figsize=(25, 14))
         plt.imshow(plot[:, :, ::-1])
         plt.axis("off")
-        if user_input:
-            plt.show()
-            var = input(" Control points OK in previous image ? ([y]/n):")
-            if var.lower() != "n":
-                points_keep.append(img_pts)
-                img_keep.append(fname)
-        else:
-            fig.tight_layout()
-            fig.savefig(check_control_pts_dir.joinpath(os.path.basename(fname)))
-            points_keep.append(img_pts)
-            img_keep.append(fname)
-            plt.close("all")
+        fig.tight_layout()
+        fig.savefig(check_control_pts_dir.joinpath(os.path.basename(fname)))
+        points_keep.append(img_pts)
+        img_keep.append(fname)
+        plt.close("all")
 
     return points_keep, img_keep
 
