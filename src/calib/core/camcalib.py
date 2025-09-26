@@ -11,11 +11,11 @@ logger = logging.getLogger(__name__)
 
 
 def get_control_points_from_img(path, chessboard_size):
-    """Analyse images in path and retrieve pixel coordinates of chessboard corners.  # noqa: D205
+    """Analyse images in path and retrieve pixel coordinates of chessboard corners.
+
     All files in path are analysed (so the directory should contain only
     calibration images). All the calibration images MUST have the same
     dimensions (pixel number).
-
     To find the chessboard corners coordinates, the algorithm needs to know
     the chessboard size (number of square corners in each dimension),
     and the chessboard in the image should not be larger than the specified
@@ -40,14 +40,14 @@ def get_control_points_from_img(path, chessboard_size):
 
     Returns:
     -------
-    imgpoints : list
-        a list of numpy arrays. Each element of the list contains the pixel
-        coordinates of the chessboard corners of a calibration image
-    imgfiles : list
-        image filenames for which chessboard corners were found (the
-        corresponding corners coordinates are returner in `imgpoints` list)
-    imshape : tuple
-        the shape of calibration images. as (width, height)
+        imgpoints : list
+            a list of numpy arrays. Each element of the list contains the pixel
+            coordinates of the chessboard corners of a calibration image
+        imgfiles : list
+            image filenames for which chessboard corners were found (the
+            corresponding corners coordinates are returner in imgpoints list)
+        imshape : tuple
+            the shape of calibration images. as (width, height)
     """
     nx, ny = chessboard_size
     # termination criteria
