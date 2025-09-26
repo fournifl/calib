@@ -4,6 +4,7 @@ import os
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+from rich.progress import track
 
 from calib.core.img import crop, read, showmpl
 
@@ -57,7 +58,12 @@ def get_control_points_from_img(path, chessboard_size):
     imgfiles = []
     imshape = None
 
-    for fname in os.listdir(path):
+    ls = sorted(path.glob("*.jpeg"))
+    for i in track(
+        range(len(ls)),
+        description="Get control points from images",
+    ):
+        fname = ls[i]
         logger.info("Searching calibration pattern in image %s" % fname)
         fname = os.path.join(path, fname)
         try:
@@ -129,8 +135,7 @@ def add_grid_and_undistort(mtx, dist, img):
 def check_control_points(
     imgpoints, imgfiles, chessboard_size, output_dir, user_input=False
 ):
-    """Visual control of control points found in calibration images by  # noqa: D205
-    :func:`get_control_points_from_img` function.
+    """Visual control of control points found in calibration images by `get_control_points_from_img` function.
 
     Each calibration image is displayed with the found control points, and the
     user is asked to validate or discard the image.
@@ -159,7 +164,13 @@ def check_control_points(
     nx, ny = chessboard_size
     points_keep = []
     img_keep = []
-    for img_pts, fname in zip(imgpoints, imgfiles):
+    for i in track(
+        range(len(imgfiles)),
+        description="Check control points",
+    ):
+        fname = imgfiles[i]
+        img_pts = imgpoints[i]
+        # for img_pts, fname in zip(imgpoints, imgfiles):
         img = read(fname)
         plot = cv2.drawChessboardCorners(img, (ny, nx), img_pts, True)
         plot = crop(plot)
@@ -245,8 +256,7 @@ def plot_img_points_cv(img, img_points):
 
 
 def intrinsic_parameters(path, chessboard_size):
-    """Given a directory path and a chessboard_size compute camera matrix and
-    distortion coefficients
+    """Given a directory path and a chessboard_size compute camera matrix and distortion coefficients.
 
     Parameters
     ----------
@@ -257,8 +267,10 @@ def intrinsic_parameters(path, chessboard_size):
 
     Returns:
     -------
-    None
+
     """
+    print("intrinsic parameters' computation")
+
     # get control points
     imgpoints, imgfiles, imshape = get_control_points_from_img(path, chessboard_size)
     objpoints = make_object_points(imgpoints, chessboard_size)
