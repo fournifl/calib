@@ -53,6 +53,7 @@ def main(input_directory, output_directory, chessboard_size):
     cimg.save(output_directory.joinpath("calibration_points.png"), cali_pts_coverage)
 
     # save calibration results to json
+    print("save calibration results to json")
     write_dict_to_json(intrinsec_dict, output_directory.joinpath("calibration.json"))
 
     # show intrinsic
