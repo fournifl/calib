@@ -1,6 +1,6 @@
 site_name: Waves'N See calib tool documentation
 site_description: A python tool to compute intrinsic camera parameters
-docs_dir: src
+docs_dir: docs
 
 nav:
   - 🏠 Home: index.md
