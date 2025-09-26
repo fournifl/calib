@@ -24,3 +24,17 @@ If user wants to install calib as a uv tool:
 ```
 uv tool install "calib @ git+ssh://git@github.com/wavesnsee/calib"
 ```
+
+## Usage
+Prior to perform camera calibration, make snapshots of the chessboard in different configurations.
+
+**To run camera calibration:**
+```
+cd src/calib
+python cli/app.py inputdir_snapshots outputdir_calibration  chessboard size_x chessboard size_y
+```
+
+**To run camera calibration with calib tool:**
+```
+calib inputdir_snapshots outputdir_calibration  chessboard size_x chessboard size_y
+```
